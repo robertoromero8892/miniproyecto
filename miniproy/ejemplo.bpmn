@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <process id="1">
+    <name>Nombre del proceso en BPMN</name>
+  </process>
+  <process id="2">
+    <name>Nombre del proceso en BPMN</name>
+  </process>
+  <subprocess id="3">
+    <name>Nombre del subproceso en BPMN</name>
+  </subprocess>
+  <pool id="4">
+    <name>Nombre del pool en BPMN</name>
+  </pool>
+  <lane id="5">
+    <name>Nombre del lane en BPMN</name>
+  </lane>
+  <task id="6">
+    <name>Nombre del pool en BPMN</name>
+  </task>
+  <labeledassociation id="7">
+    <name>Nombre de la labeledassociation en BPMN</name>
+  </labeledassociation>
+  <dataobject id="8">
+    <name>Nombre del data object en BPMN</name>
+  </dataobject>
+  <gateway id="9">
+    <name>Nombre del gateway en BPMN</name>
+  </gateway>
+  <sequenceflow id="10">
+    <name>Nombre del sequence flow en BPMN</name>
+  </sequenceflow>
+  <messageflow id="11">
+    <name>Nombre del message flow en BPMN</name>
+  </messageflow>
+  <gateway id="12">
+    <name>Nombre del gateway en BPMN</name>
+  </gateway>
+</data>
