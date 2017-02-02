@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg12">
+                    <form id="crear-modificar-form" action="" method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table>
+                            {% for field in form %}
+                                <tr>
+                                    <td><b>{{ field.label }}: </b></td>
+                                    <td>{{ field }}
+                                        <span class="error" id="{{ field.name }}-icon"></span>
+                                        <span class="error" id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="2" class="centrar"><button type="submit" class="btn-cm btn-cm-form-submit">Cargar</button></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
