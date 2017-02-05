@@ -2,7 +2,7 @@ from django.forms import forms
 
 
 class LoadFileBPMN(forms.Form):
-    file = forms.FileField(help_text='Solo archivos .bpmn')
+    file = forms.FileField(help_text='Only .bpmn files')
 
     def clean_archivo(self):
         file = self.cleaned_data.get('archivo', False)

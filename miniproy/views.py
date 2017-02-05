@@ -45,7 +45,7 @@ def converter(bpmn_archive_path):
         else:
             print("Error, el archivo no es válido.")
             return None
-    return ET.dump(grl_root)
+    return ET.tostring(grl_root)
 
 
 class HomeView(TemplateView):
@@ -58,13 +58,16 @@ class HomeView(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
         post_values = request.POST.copy()
         form = LoadFileBPMN(post_values, request.FILES)
 
         if form.is_valid():
             file = request.FILES['file']
             output = converter(file)
-            return render(request, 'home.html')
+            context['output'] = output
+            context['success'] = "Successful convertion"
+            return render(request, 'home.html', context)
         else:
             context = {'form': form}
             return render(request, 'home.html', context)

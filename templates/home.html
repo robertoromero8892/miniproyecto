@@ -3,25 +3,57 @@
 {% block content %}
     <section>
         <div class="container">
+            <div class="jumbotron">
+                <h1>Hello, world!!!</h1>
+                <p>Welcome to the best models converter BPMN to GRL</p>
+                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more about us</a></p>
+            </div>
             <div class="row">
-                <div class="col-lg12">
-                    <form id="crear-modificar-form" action="" method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <table>
-                            {% for field in form %}
-                                <tr>
-                                    <td><b>{{ field.label }}: </b></td>
-                                    <td>{{ field }}
-                                        <span class="error" id="{{ field.name }}-icon"></span>
-                                        <span class="error" id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="2" class="centrar"><button type="submit" class="btn-cm btn-cm-form-submit">Cargar</button></td>
-                            </tr>
-                        </table>
-                    </form>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Input File BPMN</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form id="crear-modificar-form" action="" method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="col-lg-8">
+                                    {% if success %}
+                                        {{ success }}
+                                    {% endif %}
+                                    <table>
+                                        {% for field in form %}
+                                            <tr>
+                                                <td><b>{{ field.label }}: </b></td>
+                                                <td>{{ field }}
+                                                    <span class="error" id="{{ field.name }}-icon"></span>
+                                                    <span class="error" id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                <div class="col-lg-4">
+                                    {% if success %}
+                                         <button href="{% url 'home' %}" class="btn btn-primary">Convert Another File</button>
+                                    {% else %}
+                                         <button type="submit" class="btn btn-primary">Convert</button>
+                                    {% endif %}
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Output File GRL</h3>
+                        </div>
+                        <div class="panel-body">
+                            {{ output }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
