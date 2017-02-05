@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import xml.etree.cElementTree as ET
+import tempfile
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
@@ -45,7 +46,7 @@ def converter(bpmn_archive_path):
         else:
             print("Error, el archivo no es válido.")
             return None
-    return ET.tostring(grl_root)
+    return {"output": ET.tostring(grl_root), "input": ET.tostring(bpmn_root)}
 
 
 class HomeView(TemplateView):
@@ -64,8 +65,9 @@ class HomeView(TemplateView):
 
         if form.is_valid():
             file = request.FILES['file']
-            output = converter(file)
-            context['output'] = output
+            result = converter(file)
+            context['input'] = result['input']
+            context['output'] = result['output']
             context['success'] = "Successful convertion"
             return render(request, 'home.html', context)
         else:
