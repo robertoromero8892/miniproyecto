@@ -1,4 +1,4 @@
-from django.forms import forms
+from django import forms
 
 
 class LoadFileBPMN(forms.Form):
@@ -17,3 +17,13 @@ class LoadFileBPMN(forms.Form):
         for key in self.fields:
             self.fields[key].required = True
             self.fields[key].widget.attrs['required'] = 'True'
+
+class GRLData(forms.Form):
+    file_body = forms.CharField(widget=forms.Textarea)
+
+    def __init__(self,*args,**kwargs):
+        super(GRLData,self).__init__(*args,**kwargs)
+        for key in self.fields:
+            self.fields[key].required = True
+            self.fields[key].widget.attrs['required'] = 'True'
+

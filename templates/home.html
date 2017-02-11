@@ -25,7 +25,7 @@
                                         {{ success }}
                                     {% endif %}
                                     <table>
-                                        {% for field in form %}
+                                        {% for field in bpmn_form %}
                                             <tr>
                                                 <td><b>{{ field.label }}: </b></td>
                                                 <td>{{ field }}
@@ -54,7 +54,29 @@
                             <h3 class="panel-title">Output File GRL</h3>
                         </div>
                         <div class="panel-body">
-                            {{ output }}
+                            {% if success %}
+                                <form id="grl-form" action="{% url 'download' %}" method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="panel-body">
+                                        <table>
+                                            {% for field in grl_form %}
+                                                <tr>
+                                                    <td><b>{{ field.label }}: </b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>{{ field }}
+                                                        <span class="error" id="{{ field.name }}-icon"></span>
+                                                        <span class="error" id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <button type="submit" class="btn btn-primary">Export</button>
+                                    </div>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

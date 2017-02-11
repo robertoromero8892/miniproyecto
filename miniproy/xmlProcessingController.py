@@ -14,7 +14,7 @@ convertion_dict = {"process": "hardgoal",
                    }
 
 
-def bpmnToGRLConvertion(bpmn_archive_path):
+def converter(bpmn_archive_path):
     try:
         bpmn_tree = ET.parse(bpmn_archive_path)
     except:
@@ -41,4 +41,4 @@ def bpmnToGRLConvertion(bpmn_archive_path):
         else:
             print("Error, el archivo no es válido.")
             return None
-    return ET.dump(grl_root)
+    return {"output": ET.tostring(grl_root), "input": ET.tostring(bpmn_root)}

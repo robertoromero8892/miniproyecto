@@ -1,75 +1,60 @@
 # -*- coding: utf-8 -*-
-import xml.etree.cElementTree as ET
 import tempfile
+import xml.etree.cElementTree as ET
+
+from django.core.servers.basehttp import FileWrapper
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
-from miniproy.forms import LoadFileBPMN
-
-convertion_dict = {"process": "hardgoal",
-                   "subprocess": "hardgoal",
-                   "pool": "actor",
-                   "lane": "role",
-                   "task": "task",
-                   "labeledassociation": "softgoal",
-                   "dataobject": "resource",
-                   "gateway": "taskdescompositionlink",
-                   "sequenceflow": "meansendlink",
-                   "messageflow": "dependencylink"
-                   }
-
-
-def converter(bpmn_archive_path):
-    try:
-        bpmn_tree = ET.parse(bpmn_archive_path)
-    except:
-        print("El archivo especificado no existe.")
-        return None
-
-    bpmn_root = bpmn_tree.getroot()
-
-    grl_root = ET.Element('data')
-    id_count = 1
-
-    for bpmn_element in list(bpmn_root):
-        bpmn_element_tag = bpmn_element.tag
-        if bpmn_element_tag in list(convertion_dict.keys()):
-            new_grl_child = ET.SubElement(
-                grl_root,
-                convertion_dict[bpmn_element_tag]
-            )
-            new_grl_child.set('id', str(id_count))
-            id_count += 1
-            new_grl_child_name = ET.SubElement(new_grl_child, 'name')
-
-            new_grl_child_name.text = bpmn_element.find('name').text
-        else:
-            print("Error, el archivo no es válido.")
-            return None
-    return {"output": ET.tostring(grl_root), "input": ET.tostring(bpmn_root)}
-
+from miniproy.forms import *
+from miniproy.xmlProcessingController import *
 
 class HomeView(TemplateView):
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        form = LoadFileBPMN()
-        context['form'] = form
+        bpmn_form = LoadFileBPMN()
+        grl_form = GRLData()
+        context['bpmn_form'] = bpmn_form
+        context['grl_form'] = grl_form
         return context
 
     def post(self, request, *args, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         post_values = request.POST.copy()
-        form = LoadFileBPMN(post_values, request.FILES)
+        bpmn_form = LoadFileBPMN(post_values, request.FILES)
 
-        if form.is_valid():
+        if bpmn_form.is_valid():
             file = request.FILES['file']
             result = converter(file)
+            grl_form = GRLData({'file_body': result['output']})
             context['input'] = result['input']
-            context['output'] = result['output']
+            context['grl_form'] = grl_form
             context['success'] = "Successful convertion"
             return render(request, 'home.html', context)
         else:
-            context = {'form': form}
+            context = {'bpmn_form': bpmn_form}
             return render(request, 'home.html', context)
+
+class DownloadGRLFile(View):
+
+    def post(self, request, *args, **kwargs):
+        post_values = request.POST.copy()
+        grl_form = GRLData(post_values)
+
+        if grl_form.is_valid():
+            data = grl_form.cleaned_data
+            grl_body = data['file_body']
+
+            tmp = tempfile.TemporaryFile()
+
+            tmp.write(bytes(grl_body, 'UTF-8'))
+            tmp.seek(0)
+            downloadable_file = FileWrapper(tmp)
+
+            response = HttpResponse(downloadable_file, content_type='application/xml')
+            response['Content-Disposition'] = 'attachment; filename=grldiagram.grl'
+
+            return response
